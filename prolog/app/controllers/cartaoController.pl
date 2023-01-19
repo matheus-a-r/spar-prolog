@@ -2,7 +2,7 @@
     addCartao/2,
     removeCartao/2
   ]).
-  :-use_module('../util/JsonFunctions.pl').
+  :-use_module('util/JsonFunctions.pl').
   
   % Descrição:
   %		Adiciona uma carta a um pilha no banco de dados.
@@ -11,6 +11,8 @@
   %		2: +NewCard: A nova carta a ser adicionada
   addCartao(PilhaName, NewCartao) :-
       readJSON(File),
+      writeln(PilhaName),
+      writeln(NewCartao),
       addCartaoJSON(File, PilhaName, NewCartao, Out),
       pilhasToJSON(Out, OutJSON),
       writeJSON(OutJSON).

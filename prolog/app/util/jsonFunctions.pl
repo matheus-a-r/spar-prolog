@@ -6,9 +6,10 @@
 	deletePilhaJSON/3,
 	updatePilhaNameJSON/4,
 	shuffleCardsJSON/3,
-	addCardJSON/4,
-	removeCardJSON/4,
-	pilhaExistsJSON/3
+	addCartaoJSON/4,
+	removeCartaoJSON/4,
+	pilhaExistsJSON/3,
+	printCartoesPilhaJSON/3
 ]).
 :- use_module(library(http/json)).
 
@@ -68,12 +69,12 @@ updatePilhaNameJSON([H|T], PilhaName, NewName, [H|Out]) :-
 %		2: +PilhaName: O nome do pilha a ser alterado
 %		3: +NewCard: O novo card a ser adicionado
 %		4: -Out: A nova lista de Pilhas
-addCardJSON([], _, _, []).
-addCardJSON([H|Rest], H.name, NewCard, [_{name:H.name, cards: Cards}|RestOut]) :-
+addCartaoJSON([], _, _, []).
+addCartaoJSON([H|Rest], H.name, NewCard, [_{name:H.name, cards: Cards}|RestOut]) :-
 	append([NewCard], H.cards, Cards),
-	addCardJSON(Rest, H.name, NewCard, RestOut).
-addCardJSON([H|T], PilhaName, NewCard, [H|Out]) :- 
-	addCardJSON(T, PilhaName, NewCard, Out).
+	addCartaoJSON(Rest, H.name, NewCard, RestOut).
+addCartaoJSON([H|T], PilhaName, NewCard, [H|Out]) :- 
+	addCartaoJSON(T, PilhaName, NewCard, Out).
 
 % Descrição:
 %		Remove um card do Pilha
@@ -82,12 +83,12 @@ addCardJSON([H|T], PilhaName, NewCard, [H|Out]) :-
 %		2: +PilhaName: O nome do pilha a ser alterado
 %		3: +CardToRemove: O card a ser removido
 %		4: -Out: A nova lista de Pilhas
-removeCardJSON([], _, _, []).
-removeCardJSON([H|Rest], H.name, CardToRemove, [_{name:H.name, cards: Cards}|RestOut]) :-
+removeCartaoJSON([], _, _, []).
+removeCartaoJSON([H|Rest], H.name, CardToRemove, [_{name:H.name, cards: Cards}|RestOut]) :-
 	delete(H.cards, CardToRemove, Cards),
-	removeCardJSON(Rest, H.name, CardToRemove, RestOut).
-removeCardJSON([H|T], PilhaName, CardToRemove, [H|Out]) :- 
-	removeCardJSON(T, PilhaName, CardToRemove, Out).
+	removeCartaoJSON(Rest, H.name, CardToRemove, RestOut).
+removeCartaoJSON([H|T], PilhaName, CardToRemove, [H|Out]) :- 
+	removeCartaoJSON(T, PilhaName, CardToRemove, Out).
 
 % Descrição:
 %		Aleatoriza a ordem das cartas no pilha.
@@ -95,8 +96,8 @@ removeCardJSON([H|T], PilhaName, CardToRemove, [H|Out]) :-
 % 	1: +Pilhas: Lista de Pilhas (Obtido no readJSON/1)
 % 	2: +PilhaName: Nome do Pilha a ser aleatorizado
 % 	3: -Out: Saída da lista de Pilhas (Para salvar no writeJSON/1)
-shuffleCardsJSON([], _, _).
-shuffleCardsJSON([H|Rest], PilhaName, [_{name:H.name, cards: Cards}|RestOut]) :-
+shuffleCartoesJSON([], _, _).
+shuffleCartoesJSON([H|Rest], PilhaName, [_{name:H.name, cards: Cards}|RestOut]) :-
 	length(Cards, L),
 	(H.name == PilhaName -> 
 		(L > 0 -> 
@@ -131,3 +132,7 @@ pilhaExistsJSON([H|T], PilhaName, Exists):-
   (
     H.name == PilhaName -> Exists = "yes";
     pilhaExistsJSON(T, PilhaName, Exists)).
+
+printCartoesPilhaJSON([],_,[]).
+printCartoesPilhaJSON([H|T], H.name, H.cards).
+printCartoesPilhaJSON([H|T], PilhaName, Out) :- printCartoesPilhaJSON(T, PilhaName, Out).
