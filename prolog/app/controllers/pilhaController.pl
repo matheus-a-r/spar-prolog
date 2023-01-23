@@ -34,7 +34,7 @@
   deletePilha(PilhaName) :-
       readJSON(File),
       deletePilhaJSON(File, PilhaName, Out),
-      pihasToJSON(Out, OutJSON),
+      pilhasToJSON(Out, OutJSON),
       writeJSON(OutJSON).
   
   % Descrição:

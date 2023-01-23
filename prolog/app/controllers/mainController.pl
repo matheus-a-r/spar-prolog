@@ -56,6 +56,8 @@ choosePilha(NumPilhaStr):-
   menuOptionsChoosedPilha(OptionUpper, Pilha), !.
 
 menuOptionsChoosedPilha("A", Pilha) :- addCartaoMenu(Pilha), !.
+menuOptionsChoosedPilha("R", Pilha) :- removePilha(Pilha), !.
+menuOptionsChoosedPilha("E", Pilha) :- editCardMenu(Pilha), !.
 
 addCartaoMenu(Pilha):-
   writeln("\n> Qual sera a frente da carta?"),
@@ -67,6 +69,17 @@ addCartaoMenu(Pilha):-
   writeln("\nCarta adicionada com sucesso!\n"),
   putLine(),
   mainMenu().
+
+removePilha(Pilha):-
+  writeln("\n> Tem certeza que deseja remover a pilha? [Y]"),
+  readLine(Option),
+  string_upper(Option, OptionUpper),
+  confirmRemove(OptionUpper, Pilha).
+
+confirmRemove("Y", Pilha):- 
+  deletePilha(Pilha.name), 
+  writeln("\nA pilha foi removida com sucesso!\n"),
+  putLine(), mainMenu(), !.
 
 getPilhaName(E, Out):-
   Out = E.name.
@@ -88,6 +101,7 @@ enumCartoes([],_).
 enumCartoes([[H|T]|[]], N):-
   atomic_list_concat([N, " - ", H], HOut),
   writeln(HOut).
+
 enumCartoes([[H|T]|R], N):-
   atomic_list_concat([N, " - ", H], HOut),
   writeln(HOut),
