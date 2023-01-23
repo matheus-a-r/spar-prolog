@@ -1,6 +1,8 @@
 :-module('mainController', [
   mainMenu/0
 ]).
+?- use_module(library(date)).
+
 :-use_module('InterfaceController.pl').
 :-use_module('../util/JsonFunctions.pl').
 :-use_module(library(readutil)).
@@ -29,7 +31,7 @@ menuOptionsPilha("C") :- createPilhaMenu(), !.
 menuOptionsPilha("G") :- choosePilhaMenu(), !.
 
 createPilhaMenu():-
-  write("\nDigite o nome do novo pilha: "),
+  write("\nDigite o nome da pilha: "),
   readLine(NamePilha),
   createPilha(NamePilha, []),
   putLine(),
@@ -64,7 +66,11 @@ addCartaoMenu(Pilha):-
   readLine(Front),
   writeln("\n> Qual sera o verso da carta?"),
   readLine(Back),
-  Cartao = [Front, Back],
+  get_time(TimeStamp),
+  %stamp_date_time(TimeStamp, DateTime, 'UTC'),
+  %date_time_value(date, DateTime, Value),
+  format_time(string(DateTimeString), '%d-%m-%Y', TimeStamp),
+  Cartao = [Front, Back, DateTimeString, DateTimeString , "0"],
   addCartao(Pilha.name, Cartao),
   writeln("\nCarta adicionada com sucesso!\n"),
   putLine(),
