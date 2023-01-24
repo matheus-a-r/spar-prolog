@@ -87,6 +87,28 @@ confirmRemove("Y", Pilha):-
   writeln("\nA pilha foi removida com sucesso!\n"),
   putLine(), mainMenu(), !.
 
+editCardMenu(Pilha):-
+  writeln("Escolha o cartão que deseja editar: "),
+  readLine(Option),
+  atom_number(Option, Number),
+  Number2 is Number - 1,
+  findCard(Pilha, Pilha.cards, Number2, Aux),
+  editCard(Pilha, Aux),
+  removeCartao(Pilha.name, Aux),
+  mainMenu().
+    
+editCard(Pilha, [_, _, D, V, F]):-
+  writeln("Qual sera a nova frente da carta? "),
+  readLine(Frente),
+  writeln("Qual sera o novo verso da carta? "),
+  readLine(Verso),
+  NewCartao = [Frente, Verso, D, V , F],
+  addCartao(Pilha.name, NewCartao).
+
+%findCard(Pilha, [], Indice, Aux):- writeln("Cartao nao encontrado"), editCardMenu(Pilha).      
+findCard(Pilha, [H|T], Indice, Aux):- NewIndice is Indice - 1, findCard(Pilha, T, NewIndice, Aux).
+findCard(Pilha, [H|T], 0, Aux):- Aux = H.
+
 getPilhaName(E, Out):-
   Out = E.name.
 
