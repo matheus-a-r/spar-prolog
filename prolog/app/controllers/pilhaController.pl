@@ -8,9 +8,9 @@
   :-use_module('../util/JsonFunctions.pl').
   
   % Descrição:
-  %		Cria um pilha e o salva.
+  %		Cria uma pilha e a salva.
   % Parâmetros:
-  %		1: +Name: O nome do pilha a ser criado
+  %		1: +Name: O nome da pilha a ser criada
   %		2: +Cards: A lista de cards iniciais
   createPilha(Name, Cards) :-
       jsonfunctions:readJSON(File),
@@ -18,19 +18,19 @@
       (
           Exists == "yes" -> 
               writeln("\nO nome de pilha fornecido ja esta em uso!"),
-              writeln("O pilha nao foi criado.")
+              writeln("A pilha nao foi criada.")
               ;
               pilhasToJSON(File, PilhasListJSON),
               pilhaToJSON(Name, Cards, PilhaJSON),
               append(PilhasListJSON, [PilhaJSON], OutJSON),
               writeJSON(OutJSON),
-              writeln("\nPilha criado com sucesso!\n")
+              writeln("\nPilha criada com sucesso!\n")
           ).
           
   % Descrição:
-  %		Remove um pilha do banco de dados.
+  %		Remove uma pilha do banco de dados.
   % Parâmetros:
-  %		1: +PilhaName: O nome do pilha a ser removido
+  %		1: +PilhaName: O nome da pilha a ser removida
   deletePilha(PilhaName) :-
       readJSON(File),
       deletePilhaJSON(File, PilhaName, Out),
@@ -38,19 +38,19 @@
       writeJSON(OutJSON).
   
   % Descrição:
-  %		Edita um pilha no banco de dados.
+  %		Edita uma pilha no banco de dados.
   % Parâmetros:
-  %		1: +PilhaName: O nome do pilha a ser alterado
-  %		2: +NewName: O novo nome do pilha
+  %		1: +PilhaName: O nome da pilha a ser alterada
+  %		2: +NewName: O novo nome da pilha
   editPilhaName(PilhaName, NewName) :-
       readJSON(File),
       updatePilhaNameJSON(File, PilhaName, NewName, Out),
       pilhasToJSON(Out, OutJSON),
       writeJSON(OutJSON).
   % Descrição:
-  %		Aleatoriza a ordem das cartas de um pilha no banco de dados.
+  %		Aleatoriza a ordem das cartas de uma pilha no banco de dados.
   % Parâmetros:
-  %		1: +PilhaName: O nome do pilha a ser aleatorizado
+  %		1: +PilhaName: O nome da pilha a ser aleatorizado
   shuffleCards(PilhaName) :-
       readJSON(File),
       shuffleCardsJSON(File, PilhaName, Out),
@@ -58,16 +58,16 @@
       writeJSON(OutJSON).
   
   % Descrição:
-  %		Premissa auxiliar para imprimir os pilhas na tela.
+  %		Premissa auxiliar para imprimir as pilhas na tela.
   % Parâmetros:
   %		1: +Pilhas: A lista de pilhas
   showPilhasAux([]).
   showPilhasAux([H|T]) :- 
-      write("Name:"), writeln(H.name), 
-      write("Cards:"), writeln(H.cards), nl, showPilhasAux(T).
+      write("Nome:"), writeln(H.name),
+      write("Cartoes:"), writeln(H.cards), nl, showPilhasAux(T).
   
   % Descrição:
-  %		Imprime os pilhas na tela.
+  %		Imprime as pilhas na tela.
   % Parâmetros: Nenhum parâmetro
   showPilhas() :-
       readJSON(Pilhas),
@@ -76,8 +76,8 @@
   % Descrição:
   %		Verifica se um nome de pilha já está sendo usado no banco de dados.
   % Parâmetros:
-  %		1: +PilhaName: O nome do pilha a ser alterado
-  %		2: -Exists: "yes" se o pilha existir, "no" se não.
+  %		1: +PilhaName: O nome da pilha a ser alterado
+  %		2: -Exists: "yes" se a pilha existir, "no" se não.
   pilhaExists(PilhaName, Exists):-
     readJSON(Pilhas),
     pilhaExistsJSON(Pilhas, PilhaName, Exists).
