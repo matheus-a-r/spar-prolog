@@ -17,11 +17,11 @@ mainMenu:-
       L == 0 -> MenuPilhas = 'Voc\u00EA n\u00E3o possui pilhas';
       listPilhasNamesAndIndex(1, PilhaNames, IndexedNames),
       atomic_list_concat(IndexedNames, "\n", PilhasList),
-      atomic_concat("Seus pilhas:\n\n", PilhasList, MenuPilhas)
+      atomic_concat("Suas pilhas:\n\n", PilhasList, MenuPilhas)
       
     ),
     writeln(MenuPilhas),
-    write("\n   [E]Estudar    [C] Criar pilha  [G] Gerenciar pilha  [V] Vizualizar Sessoes de Estudo   [A]Alterar intervalos            \n"),
+    write("\n   [E]studar    [C]riar pilha  [G]erenciar pilha  [V]isualizar Sessoes de Estudo   [A]lterar intervalos            \n"),
     write("\n> O que voce deseja? "),
     readLine(Option),
     string_upper(Option, OptionUpper),
@@ -38,7 +38,7 @@ createPilhaMenu():-
   mainMenu().
 
 choosePilhaMenu():-
-  write("\n> Escolha o n\u00FAmero do pilha: "),
+  write("\n> Escolha o n\u00FAmero da pilha: "),
   readLine(NumPilha),
   choosePilha(NumPilha), !.
 
@@ -51,7 +51,7 @@ choosePilha(NumPilhaStr):-
   string_concat(ParcialString, "  >>", StringName),
   writeln(StringName),
   printCardsPilha(Pilha.name),
-  writeln("\n    [A] Add carta   [E] Editar carta  [R] Remover pilha   [X] Voltar\n"),
+  writeln("\n    [A]dicionar cartão   [E]studar pilha  [R]emover pilha   [V]oltar\n"),
   writeln("> O que voce deseja? "),
   readLine(Option),
   string_upper(Option, OptionUpper),
@@ -59,12 +59,25 @@ choosePilha(NumPilhaStr):-
 
 menuOptionsChoosedPilha("A", Pilha) :- addCartaoMenu(Pilha), !.
 menuOptionsChoosedPilha("R", Pilha) :- removePilha(Pilha), !.
-menuOptionsChoosedPilha("E", Pilha) :- editCardMenu(Pilha), !.
+menuOptionsChoosedPilha("E", Pilha) :- estudarPilha(Pilha, Pilha.cards), !.
+menuOptionsChoosedPilha("V", Pilha) :- mainMenu, !.
+
+estudarPilha(Pilha, []) :- mainMenu().
+estudarPilha(Pilha, [Cartao|Cartoes]) :-
+  nth0(0, Cartao, Frente),
+  nth0(1, Cartao, Verso),
+  writeln(Frente),
+  writeln("\n Pressione ENTER para ver a resposta <\n"),
+  get_single_char(_),
+  writeln(Verso),
+  writeln("\n Pressione ENTER para ver o próximo cartão <\n"),
+  get_single_char(_),
+  estudarPilha(Pilha, Cartoes).
 
 addCartaoMenu(Pilha):-
-  writeln("\n> Qual sera a frente da carta?"),
+  writeln("\n> Qual sera a frente do cartão?"),
   readLine(Front),
-  writeln("\n> Qual sera o verso da carta?"),
+  writeln("\n> Qual sera o verso do cartão?"),
   readLine(Back),
   get_time(TimeStamp),
   %stamp_date_time(TimeStamp, DateTime, 'UTC'),
@@ -72,7 +85,7 @@ addCartaoMenu(Pilha):-
   format_time(string(DateTimeString), '%d-%m-%Y', TimeStamp),
   Cartao = [Front, Back, DateTimeString, DateTimeString , "0"],
   addCartao(Pilha.name, Cartao),
-  writeln("\nCarta adicionada com sucesso!\n"),
+  writeln("\nCartão adicionado com sucesso!\n"),
   putLine(),
   mainMenu().
 
@@ -98,9 +111,9 @@ editCardMenu(Pilha):-
   mainMenu().
     
 editCard(Pilha, [_, _, D, V, F]):-
-  writeln("Qual sera a nova frente da carta? "),
+  writeln("Qual sera a nova frente do cartão? "),
   readLine(Frente),
-  writeln("Qual sera o novo verso da carta? "),
+  writeln("Qual sera o novo verso do cartão? "),
   readLine(Verso),
   NewCartao = [Frente, Verso, D, V , F],
   addCartao(Pilha.name, NewCartao).
@@ -135,4 +148,3 @@ enumCartoes([[H|T]|R], N):-
   writeln(HOut),
   N2 is N+1,
   enumCartoes(R,N2).
-
