@@ -5,10 +5,10 @@
   :-use_module('util/JsonFunctions.pl').
   
   % Descrição:
-  %		Adiciona uma carta a um pilha no banco de dados.
+  %		Adiciona um cartao a uma pilha no banco de dados.
   % Parâmetros:
-  %		1: +PilhaName: O nome do pilha a ser alterado
-  %		2: +NewCard: A nova carta a ser adicionada
+  %		1: +PilhaName: O nome da pilha a ser alterada
+  %		2: +NewCard: O novo cartão a ser adicionado
   addCartao(PilhaName, NewCartao) :-
       readJSON(File),
       writeln(PilhaName),
@@ -18,10 +18,10 @@
       writeJSON(OutJSON).
   
   % Descrição:
-  %		Adiciona uma carta a um pilha no banco de dados.
+  %		Adiciona um cartao a uma pilha no banco de dados.
   % Parâmetros:
-  %		1: +PilhaName: O nome do pilha a ser alterado
-  %		2: +NewCartao: A nova carta a ser removida
+  %		1: +PilhaName: O nome da pilha a ser alterada
+  %		2: +NewCartao: O novo cartao a ser removido
   removeCartao(PilhaName, CartaoToRemove) :-
       readJSON(File),
       removeCartaoJSON(File, PilhaName, CartaoToRemove, Out),
