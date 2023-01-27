@@ -25,26 +25,35 @@ menuOptionsPilha("C", Pilhas) :- createPilhaMenu(), !.
 menuOptionsPilha("G", Pilhas) :- managePilhaMenu(Pilhas), !.
 menuOptionsPilha("E", Pilhas) :- studyPilhaMenu(Pilhas), !.
 
-printPilhas(Pilhas) :-
-    maplist(getPilhaName, Pilhas, PilhaNames),
-    length(PilhaNames, L),
-    (
-          L == 0 -> MenuPilhas = 'Voc\u00EA n\u00E3o possui pilhas';
-          listPilhasNamesAndIndex(1, PilhaNames, IndexedNames),
-          atomic_list_concat(IndexedNames, "\n", PilhasList),
-          atomic_concat("Suas pilhas:\n\n", PilhasList, MenuPilhas)
-
-    ),
-    write(MenuPilhas),
-    writeln("\n"),
-    putLine.
-
 createPilhaMenu():-
   write("\nDigite o nome da pilha: "),
   readLine(NamePilha),
   createPilha(NamePilha, []),
   putLine(),
   mainMenu().
+
+studyPilhaMenu(Pilhas) :-
+  choosePilhaMenu(Pilhas, Pilha),
+  get_time(Inicio),
+  studyPilha(Pilha, Pilha.cards, 0, NumeroCartoes),
+  get_time(Fim),
+  Duracao is Fim - Inicio,
+  writeln(NumeroCartoes),
+  writeln(Duracao),
+  mainMenu().
+
+studyPilha(Pilha, [], Contador, Final) :- Final = Contador.
+studyPilha(Pilha, [Cartao|Cartoes], Contador, Final) :-
+  nth0(0, Cartao, Frente),
+  nth0(1, Cartao, Verso),
+  writeln(Frente),
+  writeln("\n Pressione ENTER para ver a resposta <\n"),
+  get_single_char(_),
+  writeln(Verso),
+  writeln("\n Pressione ENTER para ver o próximo cartão <\n"),
+  get_single_char(_),
+  NovoContador is Contador + 1,
+  studyPilha(Pilha, Cartoes, NovoContador, Final).
 
 managePilhaMenu(Pilhas) :-
   choosePilhaMenu(Pilhas, Pilha),
@@ -58,39 +67,10 @@ managePilhaMenu(Pilhas) :-
   string_upper(Option, OptionUpper),
   menuOptionsChoosedPilha(OptionUpper, Pilha), !.
 
-choosePilhaMenu(Pilhas, Pilha):-
-  printPilhas(Pilhas),
-  write("\n> Escolha o n\u00FAmero da pilha ou digite V pra voltar: "),
-  readLine(NumPilha),
-  choosePilha(NumPilha, Pilha), !.
-
-choosePilha("V", Pilha) :- mainMenu, !.
-choosePilha(NumPilhaStr, Pilha):-
-  number_string(NumPilha, NumPilhaStr),
-  readJSON(Pilhas), length(Pilhas, LenPilhas),
-  NumPilha > 0, NumPilha =< LenPilhas,
-  Indice is NumPilha - 1, nth0(Indice, Pilhas, Pilha).
-
 menuOptionsChoosedPilha("A", Pilha) :- addCartaoMenu(Pilha), !.
 menuOptionsChoosedPilha("R", Pilha) :- removePilha(Pilha), !.
 menuOptionsChoosedPilha("E", Pilha) :- editCardMenu(Pilha), !.
 menuOptionsChoosedPilha("V", Pilha) :- mainMenu, !.
-
-studyPilhaMenu(Pilhas) :-
-  choosePilhaMenu(Pilhas, Pilha),
-  studyPilha(Pilha, Pilha.cards).
-
-studyPilha(Pilha, []) :- mainMenu().
-studyPilha(Pilha, [Cartao|Cartoes]) :-
-  nth0(0, Cartao, Frente),
-  nth0(1, Cartao, Verso),
-  writeln(Frente),
-  writeln("\n Pressione ENTER para ver a resposta <\n"),
-  get_single_char(_),
-  writeln(Verso),
-  writeln("\n Pressione ENTER para ver o próximo cartão <\n"),
-  get_single_char(_),
-  studyPilha(Pilha, Cartoes).
 
 addCartaoMenu(Pilha):-
   writeln("\n> Qual sera a frente do cartão?"),
@@ -166,3 +146,30 @@ enumCartoes([[H|T]|R], N):-
   writeln(HOut),
   N2 is N+1,
   enumCartoes(R,N2).
+
+printPilhas(Pilhas) :-
+    maplist(getPilhaName, Pilhas, PilhaNames),
+    length(PilhaNames, L),
+    (
+          L == 0 -> MenuPilhas = 'Voc\u00EA n\u00E3o possui pilhas';
+          listPilhasNamesAndIndex(1, PilhaNames, IndexedNames),
+          atomic_list_concat(IndexedNames, "\n", PilhasList),
+          atomic_concat("Suas pilhas:\n\n", PilhasList, MenuPilhas)
+
+    ),
+    write(MenuPilhas),
+    writeln("\n"),
+    putLine.
+
+choosePilhaMenu(Pilhas, Pilha):-
+  printPilhas(Pilhas),
+  write("\n> Escolha o n\u00FAmero da pilha ou digite V pra voltar: "),
+  readLine(NumPilha),
+  choosePilha(NumPilha, Pilha), !.
+
+choosePilha("V", Pilha) :- mainMenu, !.
+choosePilha(NumPilhaStr, Pilha):-
+  number_string(NumPilha, NumPilhaStr),
+  readJSON(Pilhas), length(Pilhas, LenPilhas),
+  NumPilha > 0, NumPilha =< LenPilhas,
+  Indice is NumPilha - 1, nth0(Indice, Pilhas, Pilha).
