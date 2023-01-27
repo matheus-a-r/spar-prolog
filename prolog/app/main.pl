@@ -14,6 +14,5 @@
 
 main():-
     welcome(),
-	initialMenu(),
 	putLine(),
     mainMenu(). 

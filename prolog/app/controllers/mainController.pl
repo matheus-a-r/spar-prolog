@@ -11,24 +11,33 @@
 
 mainMenu:- 
     readJSON(Pilhas),
+    write("[E]studar
+    \n[C]riar pilha
+    \n[G]erenciar pilha
+    \n[V]isualizar Sessoes de Estudo
+    \n[A]lterar intervalos            \n"),
+    write("\n> O que voce deseja fazer? "),
+    readLine(Option),
+    string_upper(Option, OptionUpper),
+    menuOptionsPilha(OptionUpper, Pilhas).
+
+menuOptionsPilha("C", Pilhas) :- createPilhaMenu(), !.
+menuOptionsPilha("G", Pilhas) :- managePilhaMenu(Pilhas), !.
+menuOptionsPilha("E", Pilhas) :- studyPilhaMenu(Pilhas), !.
+
+printPilhas(Pilhas) :-
     maplist(getPilhaName, Pilhas, PilhaNames),
     length(PilhaNames, L),
     (
-      L == 0 -> MenuPilhas = 'Voc\u00EA n\u00E3o possui pilhas';
-      listPilhasNamesAndIndex(1, PilhaNames, IndexedNames),
-      atomic_list_concat(IndexedNames, "\n", PilhasList),
-      atomic_concat("Suas pilhas:\n\n", PilhasList, MenuPilhas)
-      
-    ),
-    writeln(MenuPilhas),
-    write("\n   [E]studar    [C]riar pilha  [G]erenciar pilha  [V]isualizar Sessoes de Estudo   [A]lterar intervalos            \n"),
-    write("\n> O que voce deseja? "),
-    readLine(Option),
-    string_upper(Option, OptionUpper),
-    menuOptionsPilha(OptionUpper).
+          L == 0 -> MenuPilhas = 'Voc\u00EA n\u00E3o possui pilhas';
+          listPilhasNamesAndIndex(1, PilhaNames, IndexedNames),
+          atomic_list_concat(IndexedNames, "\n", PilhasList),
+          atomic_concat("Suas pilhas:\n\n", PilhasList, MenuPilhas)
 
-menuOptionsPilha("C") :- createPilhaMenu(), !.
-menuOptionsPilha("G") :- choosePilhaMenu(), !.
+    ),
+    write(MenuPilhas),
+    writeln("\n"),
+    putLine.
 
 createPilhaMenu():-
   write("\nDigite o nome da pilha: "),
@@ -37,33 +46,42 @@ createPilhaMenu():-
   putLine(),
   mainMenu().
 
-choosePilhaMenu():-
-  write("\n> Escolha o n\u00FAmero da pilha: "),
-  readLine(NumPilha),
-  choosePilha(NumPilha), !.
-
-choosePilha(NumPilhaStr):-
-  number_string(NumPilha, NumPilhaStr),
-  readJSON(Pilhas), length(Pilhas, LenPilhas),
-  NumPilha > 0, NumPilha =< LenPilhas,
-  Indice is NumPilha - 1, nth0(Indice, Pilhas, Pilha),
+managePilhaMenu(Pilhas) :-
+  choosePilhaMenu(Pilhas, Pilha),
   string_concat("\n<<  ", Pilha.name, ParcialString),
   string_concat(ParcialString, "  >>", StringName),
   writeln(StringName),
   printCardsPilha(Pilha.name),
-  writeln("\n    [A]dicionar cartão   [E]studar pilha  [R]emover pilha   [V]oltar\n"),
+  writeln("\n    [A]dicionar cartão   [E]ditar cartão  [R]emover pilha   [V]oltar\n"),
   writeln("> O que voce deseja? "),
   readLine(Option),
   string_upper(Option, OptionUpper),
   menuOptionsChoosedPilha(OptionUpper, Pilha), !.
 
+choosePilhaMenu(Pilhas, Pilha):-
+  printPilhas(Pilhas),
+  write("\n> Escolha o n\u00FAmero da pilha ou digite V pra voltar: "),
+  readLine(NumPilha),
+  choosePilha(NumPilha, Pilha), !.
+
+choosePilha("V", Pilha) :- mainMenu, !.
+choosePilha(NumPilhaStr, Pilha):-
+  number_string(NumPilha, NumPilhaStr),
+  readJSON(Pilhas), length(Pilhas, LenPilhas),
+  NumPilha > 0, NumPilha =< LenPilhas,
+  Indice is NumPilha - 1, nth0(Indice, Pilhas, Pilha).
+
 menuOptionsChoosedPilha("A", Pilha) :- addCartaoMenu(Pilha), !.
 menuOptionsChoosedPilha("R", Pilha) :- removePilha(Pilha), !.
-menuOptionsChoosedPilha("E", Pilha) :- estudarPilha(Pilha, Pilha.cards), !.
+menuOptionsChoosedPilha("E", Pilha) :- editCardMenu(Pilha), !.
 menuOptionsChoosedPilha("V", Pilha) :- mainMenu, !.
 
-estudarPilha(Pilha, []) :- mainMenu().
-estudarPilha(Pilha, [Cartao|Cartoes]) :-
+studyPilhaMenu(Pilhas) :-
+  choosePilhaMenu(Pilhas, Pilha),
+  studyPilha(Pilha, Pilha.cards).
+
+studyPilha(Pilha, []) :- mainMenu().
+studyPilha(Pilha, [Cartao|Cartoes]) :-
   nth0(0, Cartao, Frente),
   nth0(1, Cartao, Verso),
   writeln(Frente),
@@ -72,7 +90,7 @@ estudarPilha(Pilha, [Cartao|Cartoes]) :-
   writeln(Verso),
   writeln("\n Pressione ENTER para ver o próximo cartão <\n"),
   get_single_char(_),
-  estudarPilha(Pilha, Cartoes).
+  studyPilha(Pilha, Cartoes).
 
 addCartaoMenu(Pilha):-
   writeln("\n> Qual sera a frente do cartão?"),
