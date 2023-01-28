@@ -176,4 +176,5 @@ choosePilha(NumPilhaStr, Pilha):-
 
 getIntervalo(Phase):-
   readIntervalJSON(Intervalos),
-  getIntervalJSON(Intervalos, Phase, Intervalo).
+  getIntervalJSON(Intervalos, Phase, Intervalo),
+  writeln(Intervalo).
