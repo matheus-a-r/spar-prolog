@@ -2,7 +2,7 @@
   mainMenu/0
 ]).
 ?- use_module(library(date)).
-
+:- use_module('../util/jsonIntervalsFunctions.pl').
 :-use_module('InterfaceController.pl').
 :-use_module('../util/JsonFunctions.pl').
 :-use_module(library(readutil)).
@@ -173,3 +173,8 @@ choosePilha(NumPilhaStr, Pilha):-
   readJSON(Pilhas), length(Pilhas, LenPilhas),
   NumPilha > 0, NumPilha =< LenPilhas,
   Indice is NumPilha - 1, nth0(Indice, Pilhas, Pilha).
+
+getIntervalo(Phase):-
+  readIntervalJSON(Intervalos),
+  getIntervalJSON(Intervalos, Phase, Intervalo),
+  writeln(Intervalo).
