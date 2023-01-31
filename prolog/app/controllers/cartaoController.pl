@@ -1,8 +1,10 @@
 :-module('cartaoController', [
     addCartao/2,
-    removeCartao/2
+    removeCartao/2,
+    proximaFase/5
   ]).
   :-use_module('util/JsonFunctions.pl').
+  :-use_module('util/JsonIntervalsFunctions.pl').
   
   % Descrição:
   %		Adiciona um cartao a uma pilha no banco de dados.
@@ -27,3 +29,15 @@
       removeCartaoJSON(File, PilhaName, CartaoToRemove, Out),
       pilhasToJSON(Out, OutJSON),
       writeJSON(OutJSON).
+
+  proximaFase(FaseAtual, DataAtual, Incremento, ProximaData, ProximaFase) :-
+    readIntervalJSON(File),
+    ProximaFase is FaseAtual + Incremento,
+    nth0(ProximaFase, File, Fase),
+    ProximaData is DataAtual + (Fase.days * 86400).
+
+  proximaFase(5, DataAtual, 1, ProximaData, ProximaFase) :-
+    proximaFase(4, DataAtual, 1, ProximaData, ProximaFase).
+
+  proximaFase(0, DataAtual, -1, ProximaData, ProximaFase) :-
+    proximaFase(1, DataAtual, -1, ProximaData, ProximaFase).

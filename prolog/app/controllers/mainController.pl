@@ -50,10 +50,29 @@ studyPilha(Pilha, [Cartao|Cartoes], Contador, Final) :-
   writeln("\n Pressione ENTER para ver a resposta <\n"),
   get_single_char(_),
   writeln(Verso),
-  writeln("\n Pressione ENTER para ver o próximo cartão <\n"),
-  get_single_char(_),
+  writeln("\nQual foi o nível de dificuldade?\n[1]Difícil   [2]Mediano  [3]Fácil  [X]Parar \n"),
+  readLine(Option),
+  studyPilhaDifficultyOptions(Option, Pilha, Cartao),
   NovoContador is Contador + 1,
   studyPilha(Pilha, Cartoes, NovoContador, Final).
+
+studyPilhaDifficultyOptions("1", Pilha, Cartao) :- studyPilhaDifficulty(-1, Pilha, Cartao).
+studyPilhaDifficultyOptions("2", Pilha, Cartao) :- studyPilhaDifficulty(0, Pilha, Cartao).
+studyPilhaDifficultyOptions("3", Pilha, Cartao) :- studyPilhaDifficulty(1, Pilha, Cartao).
+
+studyPilhaDifficulty(Incremento, Pilha, Cartao) :-
+  nth0(3, Cartao, DataString),
+  nth0(4, Cartao, FaseString),
+  date_string_to_timestamp(DataString, DataTs),
+  number_string(Fase, FaseString),
+  ProxFase is Fase + Incremento,
+  proximaFase(Fase, DataTs, Incremento, ProxData, ProxFase),
+  format_time(string(ProxDataString), '%d-%m-%Y', ProxData),
+  number_string(ProxFase, ProxFaseString),
+  nth0(0, Cartao, Frente),
+  nth0(1, Cartao, Verso),
+  nth0(2, Cartao, Criacao),
+  editCard(Pilha, Cartao, Frente, Verso, Criacao, ProxDataString, ProxFaseString).
 
 managePilhaMenu(Pilhas) :-
   choosePilhaMenu(Pilhas, Pilha),
@@ -104,16 +123,19 @@ editCardMenu(Pilha):-
   atom_number(Option, Number),
   Number2 is Number - 1,
   findCard(Pilha, Pilha.cards, Number2, Aux),
-  editCard(Pilha, Aux),
-  removeCartao(Pilha.name, Aux),
-  mainMenu().
-    
-editCard(Pilha, [_, _, D, V, F]):-
   writeln("Qual sera a nova frente do cartão? "),
   readLine(Frente),
   writeln("Qual sera o novo verso do cartão? "),
   readLine(Verso),
-  NewCartao = [Frente, Verso, D, V , F],
+  nth0(2, Aux, Data),
+  nth0(3, Aux, Validade),
+  nth0(4, Aux, Fase),
+  editCard(Pilha, Aux, Frente, Verso, Data, Validade, Fase),
+  mainMenu().
+
+editCard(Pilha, Cartao, Frente, Verso, Data, Validade, Fase) :-
+  removeCartao(Pilha.name, Cartao),
+  NewCartao = [Frente, Verso, Data, Validade, Fase],
   addCartao(Pilha.name, NewCartao).
 
 %findCard(Pilha, [], Indice, Aux):- writeln("Cartao nao encontrado"), editCardMenu(Pilha).      
