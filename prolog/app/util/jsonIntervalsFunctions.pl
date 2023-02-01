@@ -21,4 +21,4 @@ date_string_to_timestamp(DataString, Timestamp) :-
     number_string(Dia, DiaString),
     number_string(Mes, MesString),
     number_string(Ano, AnoString),
-    Timestamp is ((Ano - 1970) * 31536000 + Mes * 2592000 + Dia * 86400).
+    Timestamp is ((Ano - 1970) * 31536000 + ((Mes - 1) * 2592000) + Dia * 86400 + (13 * 86400) + 10800).

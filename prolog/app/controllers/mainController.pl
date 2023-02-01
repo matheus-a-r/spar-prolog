@@ -1,5 +1,6 @@
 :-module('mainController', [
-  mainMenu/0
+  mainMenu/0,
+  getIntervalo/2
 ]).
 ?- use_module(library(date)).
 :- use_module('../util/jsonIntervalsFunctions.pl').
@@ -196,7 +197,6 @@ choosePilha(NumPilhaStr, Pilha):-
   NumPilha > 0, NumPilha =< LenPilhas,
   Indice is NumPilha - 1, nth0(Indice, Pilhas, Pilha).
 
-getIntervalo(Phase):-
+getIntervalo(Phase, Intervalo):-
   readIntervalJSON(Intervalos),
-  getIntervalJSON(Intervalos, Phase, Intervalo),
-  writeln(Intervalo).
+  getIntervalJSON(Intervalos, Phase, Intervalo).
