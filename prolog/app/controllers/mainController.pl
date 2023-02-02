@@ -38,7 +38,8 @@ createPilhaMenu():-
 studyPilhaMenu(Pilhas) :-
   choosePilhaMenu(Pilhas, Pilha),
   get_time(Inicio),
-  studyPilha(Pilha, Pilha.cards, 0, NumeroCartoes),
+  random_permutation(Pilha.cards, ShuffledPilhaCards),
+  studyPilha(Pilha, ShuffledPilhaCards, 0, NumeroCartoes),
   get_time(Fim),
   Duracao is Fim - Inicio,
   writeln(NumeroCartoes),
@@ -68,7 +69,6 @@ studyPilhaDifficulty(Incremento, Pilha, Cartao) :-
   nth0(4, Cartao, FaseString),
   date_string_to_timestamp(DataString, DataTs),
   number_string(Fase, FaseString),
-  ProxFase is Fase + Incremento,
   proximaFase(Fase, DataTs, Incremento, ProxData, ProxFase),
   format_time(string(ProxDataString), '%d-%m-%Y', ProxData),
   number_string(ProxFase, ProxFaseString),

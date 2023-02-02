@@ -33,17 +33,6 @@
       writeJSON(OutJSON).
 
   proximaFase(FaseAtual, DataAtual, Incremento, ProximaData, ProximaFase) :-
-    ProximaFase is FaseAtual + Incremento,
+    ( FaseAtual + Incremento > 5 ; FaseAtual + Incremento < 0 -> ProximaFase = FaseAtual ; ProximaFase = FaseAtual + Incremento),
     getIntervalo(ProximaFase, Dias),
-    ProximaData is DataAtual + (Dias * 86400),
-    writeln(FaseAtual),
-    writeln(DataAtual),
-    writeln(Incremento),
-    writeln(Dias),
-    writeln(ProximaData).
-
-  proximaFase(5, DataAtual, 1, ProximaData, ProximaFase) :-
-    proximaFase(4, DataAtual, 1, ProximaData, ProximaFase).
-
-  proximaFase(0, DataAtual, -1, ProximaData, ProximaFase) :-
-    proximaFase(1, DataAtual, -1, ProximaData, ProximaFase).
+    ProximaData is DataAtual + (Dias * 86400).
