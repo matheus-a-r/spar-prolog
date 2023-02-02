@@ -44,15 +44,19 @@ studyPilhaMenu(Pilhas) :-
   get_time(Inicio),
   random_permutation(Pilha.cards, ShuffledPilhaCards),
   filterDueToday(ShuffledPilhaCards, [], ParaEstudar),
-  studyPilha(Pilha, ParaEstudar, 0, NumeroCartoes),
-  get_time(Fim),
-  Duracao is Fim - Inicio,
-  format_time(string(DateTimeString), '%d-%m-%Y', Inicio),
-  finalizarSessao(DateTimeString ,Duracao, NumeroCartoes),
-  writeln("Sessao de estudo finalizada."),
-  putLine,
-  mainMenu().
-
+  length(ParaEstudar, L),
+  (
+    L == 0 -> writeln("\nNao ha cartoes para estudar hoje nesta pilha\n"), putLine, mainMenu;
+              studyPilha(Pilha, ParaEstudar, 0, NumeroCartoes),
+              get_time(Fim),
+              Duracao is Fim - Inicio,
+              format_time(string(DateTimeString), '%d-%m-%Y', Inicio),
+              finalizarSessao(DateTimeString ,Duracao, NumeroCartoes),
+              writeln("Sessao de estudo finalizada."),
+              putLine,
+              mainMenu()
+  ).
+  
 filterDueToday([Cartao|Cartoes], Vencidos, Final) :-
   vencido(Cartao),
   append(Vencidos, [Cartao], NovoVencidos),
@@ -179,21 +183,11 @@ findCard(Pilha, [H|T], 0, Aux):- Aux = H.
 getPilhaName(E, Out):-
   Out = E.name.
 
-getSessao(S, Out):-
-  swritef(Out, '"Data de estudo":"%w","Duracao":%q, Cartoes Estudados:%d', [S.dataEstudo, S.duracao, S.cartoesEstudados]).
-
 listPilhasNamesAndIndex(_, [], []).
 listPilhasNamesAndIndex(L, [H|T], [HOut|Rest]):-
   atomic_list_concat([L, " - ", H], HOut),
   L2 is L+1,
   listPilhasNamesAndIndex(L2, T, Rest).
-
-
-listSessoes(_, [], []).
-listSessoes(L, [H|T], [HOut|Rest]):-
-  atomic_list_concat([L, " - ", H], HOut),
-  L2 is L+1,
-  listSessoes(L2, T, Rest).
 
 readLine(R):- read_line_to_codes(user_input,Cs), atom_codes(A, Cs), atomic_list_concat(L, ' ', A), atom_string(A, R).
 
@@ -220,6 +214,7 @@ printPilhas(Pilhas) :-
           L == 0 -> MenuPilhas = 'Voc\u00EA n\u00E3o possui pilhas';
           listPilhasNamesAndIndex(1, PilhaNames, IndexedNames),
           atomic_list_concat(IndexedNames, "\n", PilhasList),
+          putLine,
           atomic_concat("Suas pilhas:\n\n", PilhasList, MenuPilhas)
 
     ),
@@ -237,9 +232,12 @@ choosePilha("V", Pilha) :- mainMenu, !.
 choosePilha(NumPilhaStr, Pilha):-
   number_string(NumPilha, NumPilhaStr),
   readJSON(Pilhas), length(Pilhas, LenPilhas),
-  NumPilha > 0, NumPilha =< LenPilhas,
-  Indice is NumPilha - 1, nth0(Indice, Pilhas, Pilha).
-
+  (
+    NumPilha > 0, NumPilha =< LenPilhas -> Indice is NumPilha - 1, nth0(Indice, Pilhas, Pilha);
+    writeln("\nNumero da pilha e invalido\n"),
+    choosePilhaMenu(Pilhas, Pilha) 
+  ).
+  
 getIntervalo(Phase, Intervalo):-
   readIntervalJSON(Intervalos),
   getIntervalJSON(Intervalos, Phase, Intervalo),
