@@ -32,7 +32,21 @@
       pilhasToJSON(Out, OutJSON),
       writeJSON(OutJSON).
 
+  proximaFase(0, DataAtual, 0, ProximaData, ProximaFase):-
+    ProximaFase = 0, 
+    ProximaData is DataAtual + (1 * 86400).  
+  
+  proximaFase(FaseAtual, DataAtual, 0, ProximaData, ProximaFase):- 
+    ( FaseAtual > 5 ; FaseAtual < 0 -> ProximaFase = FaseAtual ; ProximaFase = FaseAtual),
+    ProximaData = DataAtual.  
+  
+  proximaFase(FaseAtual, DataAtual, -1, ProximaData, ProximaFase):- 
+    ( FaseAtual - 1 > 5 ; FaseAtual - 1 < 0 -> ProximaFase = FaseAtual ; ProximaFase is FaseAtual - 1),
+    getIntervalo(FaseAtual, Dias), 
+    ProximaData is DataAtual - (Dias * 86400).  
+  
   proximaFase(FaseAtual, DataAtual, Incremento, ProximaData, ProximaFase) :-
-    ( FaseAtual + Incremento > 5 ; FaseAtual + Incremento < 0 -> ProximaFase = FaseAtual ; ProximaFase = FaseAtual + Incremento),
+    ( FaseAtual + Incremento > 5 ; FaseAtual + Incremento < 0 -> ProximaFase = FaseAtual ; ProximaFase is FaseAtual + Incremento),
     getIntervalo(ProximaFase, Dias),
     ProximaData is DataAtual + (Dias * 86400).
+   

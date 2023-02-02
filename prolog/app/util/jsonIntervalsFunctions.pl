@@ -32,8 +32,7 @@ date_string_to_timestamp(DataString, Timestamp) :-
     Timestamp is ((Ano - 1970) * 31536000 + ((Mes - 1) * 2592000) + Dia * 86400 + (13 * 86400) + 10800).
 
 intervaloToJSON(Phase, Days, Out) :-
-    swritef(Out, '{"phase":%w,"days":%q}', [Phase, Days]),
-    writeln(Out).
+    swritef(Out, '{"phase":%w,"days":%q}', [Phase, Days]).
     
 intervalosToJSON([], []).
 intervalosToJSON([H|T], [X|Out]) :- 
