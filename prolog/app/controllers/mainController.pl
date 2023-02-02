@@ -43,7 +43,8 @@ studyPilhaMenu(Pilhas) :-
   choosePilhaMenu(Pilhas, Pilha),
   get_time(Inicio),
   random_permutation(Pilha.cards, ShuffledPilhaCards),
-  studyPilha(Pilha, ShuffledPilhaCards, 0, NumeroCartoes),
+  filterDueToday(ShuffledPilhaCards, [], ParaEstudar),
+  studyPilha(Pilha, ParaEstudar, 0, NumeroCartoes),
   get_time(Fim),
   Duracao is Fim - Inicio,
   format_time(string(DateTimeString), '%d-%m-%Y', Inicio),
@@ -51,6 +52,23 @@ studyPilhaMenu(Pilhas) :-
   writeln("Sessao de estudo finalizada."),
   putLine,
   mainMenu().
+
+filterDueToday([Cartao|Cartoes], Vencidos, Final) :-
+  vencido(Cartao),
+  append(Vencidos, [Cartao], NovoVencidos),
+  filterDueToday(Cartoes, NovoVencidos, Final).
+
+filterDueToday([Cartao|Cartoes], Vencidos, Final) :-
+  \+ vencido(Cartao),
+  filterDueToday(Cartoes, Vencidos, Final).
+
+filterDueToday([], Vencidos, Final) :- Final = Vencidos.
+
+vencido(Cartao) :-
+  nth0(3, Cartao, ValidadeCartaoString),
+  date_string_to_timestamp(ValidadeCartaoString, ValidadeCartao),
+  get_time(Hoje),
+  Hoje >= ValidadeCartao.
 
 studyPilha(Pilha, [], Contador, Final) :- Final = Contador.
 studyPilha(Pilha, [Cartao|Cartoes], Contador, Final) :-
