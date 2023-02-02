@@ -4,15 +4,18 @@
 ]).
 ?- use_module(library(date)).
 :- use_module('../util/jsonIntervalsFunctions.pl').
+:- use_module('../util/jsonSessoesFunctions.pl').
 :-use_module('InterfaceController.pl').
 :-use_module('IntervaloController.pl').
 :-use_module('../util/JsonFunctions.pl').
+:-use_module('SessaoController.pl').
 :-use_module(library(readutil)).
 :- set_prolog_flag('encoding', 'utf8').
 :- style_check(-singleton).
 
 mainMenu:- 
     readJSON(Pilhas),
+    readSessaoJSON(Sessoes),
     write("[E]studar
     \n[C]riar pilha
     \n[G]erenciar pilha
@@ -27,6 +30,7 @@ menuOptionsPilha("C", Pilhas) :- createPilhaMenu(), !.
 menuOptionsPilha("G", Pilhas) :- managePilhaMenu(Pilhas), !.
 menuOptionsPilha("E", Pilhas) :- studyPilhaMenu(Pilhas), !.
 menuOptionsPilha("A", Pilhas) :- alterarIntervalosMenu, !.
+menuOptionsPilha("V", Pilhas) :- printSessoes, !.
 
 createPilhaMenu():-
   write("\nDigite o nome da pilha: "),
@@ -42,33 +46,45 @@ studyPilhaMenu(Pilhas) :-
   studyPilha(Pilha, ShuffledPilhaCards, 0, NumeroCartoes),
   get_time(Fim),
   Duracao is Fim - Inicio,
-  writeln(NumeroCartoes),
-  writeln(Duracao),
+  format_time(string(DateTimeString), '%d-%m-%Y', Inicio),
+  finalizarSessao(DateTimeString ,Duracao, NumeroCartoes),
+  writeln("Sessao de estudo finalizada."),
+  putLine,
   mainMenu().
 
 studyPilha(Pilha, [], Contador, Final) :- Final = Contador.
 studyPilha(Pilha, [Cartao|Cartoes], Contador, Final) :-
   nth0(0, Cartao, Frente),
   nth0(1, Cartao, Verso),
+  putLine,
   writeln(Frente),
   writeln("\n Pressione ENTER para ver a resposta <\n"),
   get_single_char(_),
   writeln(Verso),
-  writeln("\nQual foi o nível de dificuldade?\n[1]Difícil   [2]Mediano  [3]Fácil  [X]Parar \n"),
+  writeln("\nQual foi o nivel de dificuldade?\n[1]Dificil   [2]Mediano  [3]Facil  [X]Parar \n"),
   readLine(Option),
-  studyPilhaDifficultyOptions(Option, Pilha, Cartao),
-  NovoContador is Contador + 1,
-  studyPilha(Pilha, Cartoes, NovoContador, Final).
-
+  string_upper(Option, OptionUpper),
+  (OptionUpper == "X"
+    -> NovoContador is Contador + 1, studyPilha(Pilha, [], NovoContador, Final)
+    ;
+    studyPilhaDifficultyOptions(Option, Pilha, Cartao),
+    NovoContador is Contador + 1,
+    studyPilha(Pilha, Cartoes, NovoContador, Final)
+  ). 
+  
+studyPilhaDifficultyOptions("X",_ , _)  :- finalizarSessao, !.
 studyPilhaDifficultyOptions("1", Pilha, Cartao) :- studyPilhaDifficulty(-1, Pilha, Cartao).
 studyPilhaDifficultyOptions("2", Pilha, Cartao) :- studyPilhaDifficulty(0, Pilha, Cartao).
 studyPilhaDifficultyOptions("3", Pilha, Cartao) :- studyPilhaDifficulty(1, Pilha, Cartao).
 
+
 studyPilhaDifficulty(Incremento, Pilha, Cartao) :-
   nth0(3, Cartao, DataString),
   nth0(4, Cartao, FaseString),
+  writeln("cheguei1"),
   date_string_to_timestamp(DataString, DataTs),
   number_string(Fase, FaseString),
+  writeln("cheguei2"),
   proximaFase(Fase, DataTs, Incremento, ProxData, ProxFase),
   format_time(string(ProxDataString), '%d-%m-%Y', ProxData),
   number_string(ProxFase, ProxFaseString),
@@ -139,18 +155,27 @@ editCard(Pilha, Cartao, Frente, Verso, Data, Validade, Fase) :-
   NewCartao = [Frente, Verso, Data, Validade, Fase],
   addCartao(Pilha.name, NewCartao).
 
-%findCard(Pilha, [], Indice, Aux):- writeln("Cartao nao encontrado"), editCardMenu(Pilha).      
 findCard(Pilha, [H|T], Indice, Aux):- NewIndice is Indice - 1, findCard(Pilha, T, NewIndice, Aux).
 findCard(Pilha, [H|T], 0, Aux):- Aux = H.
 
 getPilhaName(E, Out):-
   Out = E.name.
 
+getSessao(S, Out):-
+  swritef(Out, '"Data de estudo":"%w","Duracao":%q, Cartoes Estudados:%d', [S.dataEstudo, S.duracao, S.cartoesEstudados]).
+
 listPilhasNamesAndIndex(_, [], []).
 listPilhasNamesAndIndex(L, [H|T], [HOut|Rest]):-
   atomic_list_concat([L, " - ", H], HOut),
   L2 is L+1,
   listPilhasNamesAndIndex(L2, T, Rest).
+
+
+listSessoes(_, [], []).
+listSessoes(L, [H|T], [HOut|Rest]):-
+  atomic_list_concat([L, " - ", H], HOut),
+  L2 is L+1,
+  listSessoes(L2, T, Rest).
 
 readLine(R):- read_line_to_codes(user_input,Cs), atom_codes(A, Cs), atomic_list_concat(L, ' ', A), atom_string(A, R).
 
@@ -199,7 +224,10 @@ choosePilha(NumPilhaStr, Pilha):-
 
 getIntervalo(Phase, Intervalo):-
   readIntervalJSON(Intervalos),
-  getIntervalJSON(Intervalos, Phase, Intervalo).
+  getIntervalJSON(Intervalos, Phase, Intervalo),
+  writeln(Intervalos),
+  writeln(Phase),
+  writeln(Intervalo).
 
 
 alterarIntervalosMenu:-
@@ -237,3 +265,19 @@ alterarIntervalosMenu:-
   writeln("\nIntervalos salvos com sucesso!\n"),
   putLine,
   mainMenu.
+
+printSessoes:-
+  readSessaoJSON(Sessoes),
+  writeln("\n"),
+  formataSessoes(Sessoes),
+  writeln("\n"),
+  putLine,
+  mainMenu.
+
+formataSessoes([]).
+formataSessoes([H|T]):-
+  swritef(Out, 'Data de estudo:%w, Duracao:%q, Cartoes Estudados:%d\n', [H.dataEstudo, H.duracao, H.cartoesEstudados]),
+  writeln(Out),
+  formataSessoes(T).
+  
+
