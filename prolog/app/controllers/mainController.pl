@@ -5,6 +5,7 @@
 ?- use_module(library(date)).
 :- use_module('../util/jsonIntervalsFunctions.pl').
 :-use_module('InterfaceController.pl').
+:-use_module('IntervaloController.pl').
 :-use_module('../util/JsonFunctions.pl').
 :-use_module(library(readutil)).
 :- set_prolog_flag('encoding', 'utf8').
@@ -25,6 +26,7 @@ mainMenu:-
 menuOptionsPilha("C", Pilhas) :- createPilhaMenu(), !.
 menuOptionsPilha("G", Pilhas) :- managePilhaMenu(Pilhas), !.
 menuOptionsPilha("E", Pilhas) :- studyPilhaMenu(Pilhas), !.
+menuOptionsPilha("A", Pilhas) :- alterarIntervalosMenu, !.
 
 createPilhaMenu():-
   write("\nDigite o nome da pilha: "),
@@ -98,8 +100,6 @@ addCartaoMenu(Pilha):-
   writeln("\n> Qual sera o verso do cartão?"),
   readLine(Back),
   get_time(TimeStamp),
-  %stamp_date_time(TimeStamp, DateTime, 'UTC'),
-  %date_time_value(date, DateTime, Value),
   format_time(string(DateTimeString), '%d-%m-%Y', TimeStamp),
   Cartao = [Front, Back, DateTimeString, DateTimeString , "0"],
   addCartao(Pilha.name, Cartao),
@@ -200,3 +200,40 @@ choosePilha(NumPilhaStr, Pilha):-
 getIntervalo(Phase, Intervalo):-
   readIntervalJSON(Intervalos),
   getIntervalJSON(Intervalos, Phase, Intervalo).
+
+
+alterarIntervalosMenu:-
+  putLine,
+  writeln("\n> Quantos dias depois você quer ver uma carta acertada nenhuma vez? "),
+  readLine(Option0),
+  atom_number(Option0, Number0),
+  alteraIntervalo(0, Number0),
+
+  writeln("\n> Quantos dias depois você quer ver uma carta acertada uma vez? "),
+  readLine(Option1),
+  atom_number(Option1, Number1),
+  alteraIntervalo(1, Number1),
+
+  writeln("\n> Quantos dias depois você quer ver uma carta acertada duas vezes? "),
+  readLine(Option2),
+  atom_number(Option2, Number2),
+  alteraIntervalo(2, Number2),
+
+  writeln("\n> Quantos dias depois você quer ver uma carta acertada tres vezes? "),
+  readLine(Option3),
+  atom_number(Option3, Number3),
+  alteraIntervalo(3, Number3),
+
+  writeln("\n> Quantos dias depois você quer ver uma carta acertada quatro vezes? "),
+  readLine(Option4),
+  atom_number(Option4, Number4),
+  alteraIntervalo(4, Number4),
+  
+  writeln("\n> Quantos dias depois você quer ver uma carta acertada cinco vezes? "),
+  readLine(Option5),
+  atom_number(Option5, Number5),
+  alteraIntervalo(5, Number5),
+
+  writeln("\nIntervalos salvos com sucesso!\n"),
+  putLine,
+  mainMenu.
