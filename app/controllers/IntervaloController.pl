@@ -1,7 +1,7 @@
 :-module('IntervaloController',[
     alteraIntervalo/2
 ]).
-:-use_module('util/JsonIntervalsFunctions.pl').
+:-use_module('app/util/JsonIntervalsFunctions.pl').
 
 alteraIntervalo(Phase, Days):-
     readIntervalJSON(Intervalos),

@@ -4,9 +4,9 @@
     proximaFase/5
   ]).
   ?- use_module(library(date)).
-  :-use_module('util/JsonFunctions.pl').
-  :-use_module('util/JsonIntervalsFunctions.pl').
-  :-use_module('controllers/mainController.pl').
+  :-use_module('app/util/JsonFunctions.pl').
+  :-use_module('app/util/JsonIntervalsFunctions.pl').
+  :-use_module('app/controllers/mainController.pl').
   
   % Descrição:
   %		Adiciona um cartao a uma pilha no banco de dados.
