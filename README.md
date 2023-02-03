@@ -14,7 +14,14 @@ O Spar é uma ferramenta que visa ajudar estudantes a adotar a prática da repet
 - Definir intervalos customizados, ou seja, quantos dias depois o usuário quer estudar novamente uma carta que foi acertada 1, 2, 3, 4 ou 5 vezes.
 - Ver as sessões de estudos, com o tempo que cada sessão durou e a quantidade de cartas que foram estudadas.
 
-## Dependências
+## Instalação e uso
 Esta versão do Spar foi desenvolvida e testada na implementação do Prolog [SWI-Prolog](https://www.swi-prolog.org/download/stable). Recomendamos o uso de uma versão estável dele para executar o Spar.
 
 Após a instalação do SWI-Prolog, no diretório raiz do Spar, execute o comando `swipl -q -f app/main.pl`. Ao carregar o programa, digite `main.` e pressione Enter para carregar a interface do Spar.
+
+## Capturas de tela
+![Menu inicial do Spar](https://i.ibb.co/k0kxhBw/Captura-de-Tela-2023-02-03-s-10-19-04.png)
+![Estudando um cartão no Spar](https://i.ibb.co/J7X48JZ/Captura-de-Tela-2023-02-03-s-10-19-26.png)
+![Gerenciando os cartões no Spar](https://i.ibb.co/yk7fJcw/Captura-de-Tela-2023-02-03-s-10-19-40.png)
+![Visualizando as sessões de estudo já realizadas no Spar](https://i.ibb.co/RDvnwk3/Captura-de-Tela-2023-02-03-s-10-19-50.png)
+![Alterando os intervalos no Spar](https://i.ibb.co/GHCg3GJ/Captura-de-Tela-2023-02-03-s-10-20-10.png)
