@@ -134,5 +134,5 @@ pilhaExistsJSON([H|T], PilhaName, Exists):-
     pilhaExistsJSON(T, PilhaName, Exists)).
 
 printCartoesPilhaJSON([],_,[]).
-printCartoesPilhaJSON([H|T], H.name, H.cards).
-printCartoesPilhaJSON([H|T], PilhaName, Out) :- printCartoesPilhaJSON(T, PilhaName, Out).
+printCartoesPilhaJSON([H|_], H.name, H.cards).
+printCartoesPilhaJSON([_|T], PilhaName, Out) :- printCartoesPilhaJSON(T, PilhaName, Out).

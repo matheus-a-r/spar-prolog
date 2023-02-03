@@ -6,10 +6,10 @@
 
 welcome:-
     writeln("*** Bem-vindo ao Spar! ***\n"),
-    writeln("O Spar é uma ferramenta que visa ajudar estudantes a adotar a prática da repetição espaçada.\n").
+    writeln("O Spar eh uma ferramenta que visa ajudar estudantes a adotar a pratica da repeticao espacada.\n").
 
 putLine:-
     writeln("-------------------------------------------------\n").
 
 errorMenu:-
-    writeln("################# Opção inválida! #################\n").
+    writeln("################# Opcao invalida! #################\n").

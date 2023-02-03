@@ -20,8 +20,8 @@ writeIntervalJSON(JSON) :-
     open(Path, write, Stream), write(Stream, JSON), close(Stream).
 
 getIntervalJSON([], _, _).
-getIntervalJSON([H|T], H.phase, H.days).
-getIntervalJSON([H|T], PhaseName, Out) :- getIntervalJSON(T, PhaseName, Out).
+getIntervalJSON([H|_], H.phase, H.days).
+getIntervalJSON([_|T], PhaseName, Out) :- getIntervalJSON(T, PhaseName, Out).
 
 date_string_to_timestamp(DataString, Timestamp) :-
     split_string(DataString, "-", "", Partes),

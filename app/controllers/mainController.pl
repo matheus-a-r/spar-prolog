@@ -51,7 +51,7 @@ studyPilhaMenu(Pilhas) :-
               get_time(Fim),
               Duracao is Fim - Inicio,
               format_time(string(DateTimeString), '%d-%m-%Y', Inicio),
-              finalizarSessao(DateTimeString ,Duracao, NumeroCartoes),
+              finalizarSessao(DateTimeString, Duracao, NumeroCartoes),
               writeln("Sessao de estudo finalizada."),
               putLine,
               mainMenu()
@@ -103,10 +103,8 @@ studyPilhaDifficultyOptions("3", Pilha, Cartao) :- studyPilhaDifficulty(1, Pilha
 studyPilhaDifficulty(Incremento, Pilha, Cartao) :-
   nth0(3, Cartao, DataString),
   nth0(4, Cartao, FaseString),
-  writeln("cheguei1"),
   date_string_to_timestamp(DataString, DataTs),
   number_string(Fase, FaseString),
-  writeln("cheguei2"),
   proximaFase(Fase, DataTs, Incremento, ProxData, ProxFase),
   format_time(string(ProxDataString), '%d-%m-%Y', ProxData),
   number_string(ProxFase, ProxFaseString),
@@ -121,7 +119,7 @@ managePilhaMenu(Pilhas) :-
   string_concat(ParcialString, "  >>", StringName),
   writeln(StringName),
   printCardsPilha(Pilha.name),
-  writeln("\n    [A]dicionar cartão   [E]ditar cartão  [R]emover pilha   [V]oltar\n"),
+  writeln("\n    [A]dicionar cartao   [E]ditar cartao  [R]emover pilha   [V]oltar\n"),
   writeln("> O que voce deseja? "),
   readLine(Option),
   string_upper(Option, OptionUpper),
@@ -133,15 +131,15 @@ menuOptionsChoosedPilha("E", Pilha) :- editCardMenu(Pilha), !.
 menuOptionsChoosedPilha("V", Pilha) :- mainMenu, !.
 
 addCartaoMenu(Pilha):-
-  writeln("\n> Qual sera a frente do cartão?"),
+  writeln("\n> Qual sera a frente do cartao?"),
   readLine(Front),
-  writeln("\n> Qual sera o verso do cartão?"),
+  writeln("\n> Qual sera o verso do cartao?"),
   readLine(Back),
   get_time(TimeStamp),
   format_time(string(DateTimeString), '%d-%m-%Y', TimeStamp),
   Cartao = [Front, Back, DateTimeString, DateTimeString , "0"],
   addCartao(Pilha.name, Cartao),
-  writeln("\nCartão adicionado com sucesso!\n"),
+  writeln("\nCartao adicionado com sucesso!\n"),
   putLine(),
   mainMenu().
 
@@ -157,14 +155,14 @@ confirmRemove("Y", Pilha):-
   putLine(), mainMenu(), !.
 
 editCardMenu(Pilha):-
-  writeln("Escolha o cartão que deseja editar: "),
+  writeln("Escolha o cartao que deseja editar: "),
   readLine(Option),
   atom_number(Option, Number),
   Number2 is Number - 1,
   findCard(Pilha, Pilha.cards, Number2, Aux),
-  writeln("Qual sera a nova frente do cartão? "),
+  writeln("Qual sera a nova frente do cartao? "),
   readLine(Frente),
-  writeln("Qual sera o novo verso do cartão? "),
+  writeln("Qual sera o novo verso do cartao? "),
   readLine(Verso),
   nth0(2, Aux, Data),
   nth0(3, Aux, Validade),
@@ -211,7 +209,7 @@ printPilhas(Pilhas) :-
     maplist(getPilhaName, Pilhas, PilhaNames),
     length(PilhaNames, L),
     (
-          L == 0 -> MenuPilhas = 'Voc\u00EA n\u00E3o possui pilhas';
+          L == 0 -> MenuPilhas = 'Voce nao possui pilhas';
           listPilhasNamesAndIndex(1, PilhaNames, IndexedNames),
           atomic_list_concat(IndexedNames, "\n", PilhasList),
           putLine,
@@ -224,7 +222,7 @@ printPilhas(Pilhas) :-
 
 choosePilhaMenu(Pilhas, Pilha):-
   printPilhas(Pilhas),
-  write("\n> Escolha o n\u00FAmero da pilha ou digite V pra voltar: "),
+  write("\n> Escolha o numero da pilha ou digite V pra voltar: "),
   readLine(NumPilha),
   choosePilha(NumPilha, Pilha), !.
 
@@ -240,40 +238,37 @@ choosePilha(NumPilhaStr, Pilha):-
   
 getIntervalo(Phase, Intervalo):-
   readIntervalJSON(Intervalos),
-  getIntervalJSON(Intervalos, Phase, Intervalo),
-  writeln(Intervalos),
-  writeln(Phase),
-  writeln(Intervalo).
+  getIntervalJSON(Intervalos, Phase, Intervalo).
 
 
 alterarIntervalosMenu:-
   putLine,
-  writeln("\n> Quantos dias depois você quer ver uma carta acertada nenhuma vez? "),
+  writeln("\n> Quantos dias depois voce quer ver uma carta acertada nenhuma vez? "),
   readLine(Option0),
   atom_number(Option0, Number0),
   alteraIntervalo(0, Number0),
 
-  writeln("\n> Quantos dias depois você quer ver uma carta acertada uma vez? "),
+  writeln("\n> Quantos dias depois voce quer ver uma carta acertada uma vez? "),
   readLine(Option1),
   atom_number(Option1, Number1),
   alteraIntervalo(1, Number1),
 
-  writeln("\n> Quantos dias depois você quer ver uma carta acertada duas vezes? "),
+  writeln("\n> Quantos dias depois voce quer ver uma carta acertada duas vezes? "),
   readLine(Option2),
   atom_number(Option2, Number2),
   alteraIntervalo(2, Number2),
 
-  writeln("\n> Quantos dias depois você quer ver uma carta acertada tres vezes? "),
+  writeln("\n> Quantos dias depois voce quer ver uma carta acertada tres vezes? "),
   readLine(Option3),
   atom_number(Option3, Number3),
   alteraIntervalo(3, Number3),
 
-  writeln("\n> Quantos dias depois você quer ver uma carta acertada quatro vezes? "),
+  writeln("\n> Quantos dias depois voce quer ver uma carta acertada quatro vezes? "),
   readLine(Option4),
   atom_number(Option4, Number4),
   alteraIntervalo(4, Number4),
   
-  writeln("\n> Quantos dias depois você quer ver uma carta acertada cinco vezes? "),
+  writeln("\n> Quantos dias depois voce quer ver uma carta acertada cinco vezes? "),
   readLine(Option5),
   atom_number(Option5, Number5),
   alteraIntervalo(5, Number5),
@@ -292,7 +287,7 @@ printSessoes:-
 
 formataSessoes([]).
 formataSessoes([H|T]):-
-  swritef(Out, 'Data de estudo:%w, Duracao:%q, Cartoes Estudados:%d\n', [H.dataEstudo, H.duracao, H.cartoesEstudados]),
+  swritef(Out, 'Data de estudo: %w, Duracao: %q, Cartoes Estudados: %d\n', [H.dataEstudo, H.duracao, H.cartoesEstudados]),
   writeln(Out),
   formataSessoes(T).
   
