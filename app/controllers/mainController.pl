@@ -287,7 +287,8 @@ printSessoes:-
 
 formataSessoes([]).
 formataSessoes([H|T]):-
-  swritef(Out, 'Data de estudo: %w, Duracao: %q, Cartoes Estudados: %d\n', [H.dataEstudo, H.duracao, H.cartoesEstudados]),
+  format(string(Segundos), "~2f", H.duracao),
+  swritef(Out, 'Data de estudo: %w, Duracao: %w s, Cartoes Estudados: %d\n', [H.dataEstudo, Segundos, H.cartoesEstudados]),
   writeln(Out),
   formataSessoes(T).
   

@@ -23,5 +23,5 @@ Após a instalação do SWI-Prolog, no diretório raiz do Spar, execute o comand
 ![Menu inicial do Spar](https://i.ibb.co/k0kxhBw/Captura-de-Tela-2023-02-03-s-10-19-04.png)
 ![Estudando um cartão no Spar](https://i.ibb.co/J7X48JZ/Captura-de-Tela-2023-02-03-s-10-19-26.png)
 ![Gerenciando os cartões no Spar](https://i.ibb.co/yk7fJcw/Captura-de-Tela-2023-02-03-s-10-19-40.png)
-![Visualizando as sessões de estudo já realizadas no Spar](https://i.ibb.co/RDvnwk3/Captura-de-Tela-2023-02-03-s-10-19-50.png)
+![Visualizando as sessões de estudo já realizadas no Spar](https://i.ibb.co/DR9nZHT/Captura-de-Tela-2023-02-03-s-11-47-33.png)
 ![Alterando os intervalos no Spar](https://i.ibb.co/GHCg3GJ/Captura-de-Tela-2023-02-03-s-10-20-10.png)
